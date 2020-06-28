@@ -5,9 +5,10 @@ export async function up(knex: Knex){
     table.increments('id').notNullable();
     table.integer('id_client').notNullable().references('id').inTable('clients');
     table.integer('id_product').notNullable().references('id').inTable('products');
+    table.integer('quantity').notNullable();
   });
 }
 
 export async function down(knex: Knex) {
-  return knex.schema.dropTable('sold');
+  return knex.schema.dropTable('solds');
 }
