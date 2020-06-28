@@ -1,10 +1,10 @@
 import express from 'express';
+import routes from './routes';
 
 const app = express();
+app.use(express.json());
 
-app.get('', function(request, response){
-  response.send('comia fodase');
-});
+app.use(routes);
 
 app.listen(3333);
 
