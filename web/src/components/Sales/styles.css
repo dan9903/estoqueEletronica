@@ -20,11 +20,16 @@ main {
 }
 
 .inputSearch {
+  width: 100vh;
   padding: 5px ;
 }
 
 label {
   padding: 7px;
+}
+
+.qtdeSelect{
+  width: 10vh;
 }
 
 .divTotal {
