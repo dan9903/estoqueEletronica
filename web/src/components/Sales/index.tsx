@@ -87,10 +87,9 @@ const Solds = () => {
     try  {
       await api.post('sold', data); 
     } catch(err) {
+      console.log(err);
       alert('Erro ao salvar venda, tente novamente!');
     }
-    
-    window.alert("sold");
   }
 
   return (

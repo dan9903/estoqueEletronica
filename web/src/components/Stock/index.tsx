@@ -1,59 +1,25 @@
-import React, {useState, useEffect,forwardRef } from 'react';
-import MaterialTable, { Column, Icons } from 'material-table';
+import React, {useState, useEffect } from 'react';
+import MaterialTable, { Column } from 'material-table';
+import { tableIcons } from '../../utils/tableIcons';
+
 import api from '../../services/api';
+
 import './styles.css';
 
-import AddBox from '@material-ui/icons/AddBox';
-import ArrowDownward from '@material-ui/icons/ArrowDownward';
-import Check from '@material-ui/icons/Check';
-import ChevronLeft from '@material-ui/icons/ChevronLeft';
-import ChevronRight from '@material-ui/icons/ChevronRight';
-import Clear from '@material-ui/icons/Clear';
-import DeleteOutline from '@material-ui/icons/DeleteOutline';
-import Edit from '@material-ui/icons/Edit';
-import FilterList from '@material-ui/icons/FilterList';
-import FirstPage from '@material-ui/icons/FirstPage';
-import LastPage from '@material-ui/icons/LastPage';
-import Remove from '@material-ui/icons/Remove';
-import SaveAlt from '@material-ui/icons/SaveAlt';
-import Search from '@material-ui/icons/Search';
-import ViewColumn from '@material-ui/icons/ViewColumn';
-
-const tableIcons: Icons = {
-    Add: forwardRef((props, ref) => <AddBox />),
-    Check: forwardRef((props, ref) => <Check />),
-    Clear: forwardRef((props, ref) => <Clear />),
-    Delete: forwardRef((props, ref) => <DeleteOutline />),
-    DetailPanel: forwardRef((props, ref) => <ChevronRight />),
-    Edit: forwardRef((props, ref) => <Edit />),
-    Export: forwardRef((props, ref) => <SaveAlt />),
-    Filter: forwardRef((props, ref) => <FilterList />),
-    FirstPage: forwardRef((props, ref) => <FirstPage />),
-    LastPage: forwardRef((props, ref) => <LastPage />),
-    NextPage: forwardRef((props, ref) => <ChevronRight />),
-    PreviousPage: forwardRef((props, ref) => <ChevronLeft />),
-    ResetSearch: forwardRef((props, ref) => <Clear />),
-    Search: forwardRef((props, ref) => <Search />),
-    SortArrow: forwardRef((props, ref) => <ArrowDownward />),
-    ThirdStateCheck: forwardRef((props, ref) => <Remove />),
-    ViewColumn: forwardRef((props, ref) => <ViewColumn />)
-  };
-
-interface Row {
+interface Product {
+  id: number;
   name: string;
   quantity: number;
   price: number;
 }
 
 export default function Stock() {
-  const [products, setProducts] = useState<Row[]>([])
-  const [columns, SetColumns] = useState<Array<Column<Row>>>(
-    [
-      { title: 'Name', field: 'name' },
-      { title: 'Quantity', field: 'quantity', type: 'numeric' },
-      { title: 'Price', field: 'price', type: 'numeric', currencySetting:{ locale: 'USD'} },
-    ]
-  );
+  const [products, setProducts] = useState<Product[]>([])
+  const columns: Array<Column<Product>> =  [
+      { title: 'Nome', field: 'name' },
+      { title: 'Quantidade', field: 'quantity', type: 'numeric' },
+      { title: 'Preço', field: 'price', type: 'currency', currencySetting:{ locale: 'pt-BR', currencyCode: 'BRL', maximumFractionDigits: 2 } }
+  ];
 
   useEffect(()=> {
     api.get('products').then(response =>{
@@ -61,13 +27,39 @@ export default function Stock() {
     });
   }, []);
 
-  function save(product: Row) {
-    console.log(product);
-    return ;
+  async function saveProduct(product: Product) {
+    try {
+      await api.post('add', product);
+      setProducts([...products, product]);
+    } catch (err) {
+      console.log(err);
+      window.alert('Erro ao salvar estoque, tente novamente');
+    }
   }
 
-  function update(product: Row) {
+  async function updateProduct(newProduct: Product, oldProduct: Product) {
+    try {
+      await api.put('update', newProduct);
+      const productUpdate = [...products];
+      productUpdate[productUpdate.indexOf(oldProduct)] = newProduct;
+      setProducts(productUpdate);
 
+    } catch (err) {
+      console.log(err);
+      window.alert('Erro ao atualizar o produto, tente novamente!');
+    }
+    
+  }
+  async function deleteProduct(product: Product) {
+    try {
+      await api.delete(`delete/${product.id}`);
+      const productDelete = [...products];
+      productDelete.splice(productDelete.indexOf(product), 1);
+      setProducts(productDelete);
+    } catch (err) {
+      console.log(err);
+      window.alert('Erro ao deletar o produto, tente novamente');
+    }
   }
 
   return (
@@ -77,30 +69,26 @@ export default function Stock() {
       data={products}
       icons={tableIcons}
       editable={{
-        onRowAdd: (newData) =>
+        onRowAdd: (newProduct) =>
           new Promise((resolve) => {
             setTimeout(() => {
-              setProducts([...products, newData]);
+              saveProduct(newProduct);
               resolve();
             }, 600);
           }),
-        onRowUpdate: (newData, oldData) =>
+        onRowUpdate: (newProduct, oldProduct) =>
           new Promise((resolve) => {
             setTimeout(() => {
-              if (oldData) {
-                  const dataUpdate = [...products];
-                  dataUpdate[dataUpdate.indexOf(oldData)] = newData;
-                  setProducts(dataUpdate);
+              if (oldProduct) {
+                updateProduct(newProduct, oldProduct);
                 resolve();
               }
             }, 600);
           }),
-        onRowDelete: (oldData) =>
+        onRowDelete: (oldProduct) =>
           new Promise((resolve) => {
             setTimeout(() => {
-                const dataDelete = [...products];
-                dataDelete.splice(dataDelete.indexOf(oldData), 1);
-                setProducts(dataDelete);
+                deleteProduct(oldProduct);
               resolve();
             }, 600);
           }),

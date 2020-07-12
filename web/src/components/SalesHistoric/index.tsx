@@ -1,70 +1,54 @@
-import React, { useState } from 'react';
-import MaterialTable, { Column, Icons } from 'material-table';
+import React, { useState, useEffect } from 'react';
+import MaterialTable, { Column } from 'material-table';
+import { tableIcons } from '../../utils/tableIcons';
+import ProductsTable from './productsTable';
+import api from '../../services/api';
 
-interface Row {
+import './styles.css';
+
+interface Sold {
+  id: number,
   name: string;
-  surname: string,
-  birthYear: number,
-  birthCity: number;
+  phone: string,
+  sold_date: number,
 }
 
-export default function ConsultarEstoque() {
-  const { useState } = React;
+const columns : Array<Column<Sold>> = [
+    { title: 'Nome', field: 'name' },
+    { title: 'Telefone', field: 'phone', type: 'string' },
+    { title: 'Data da Venda', field: 'sold_date', type: 'date' }
+];
 
-  const [columns, setColumns] = useState<Array<Column<Row>>>([
-    { title: 'Name', field: 'name' },
-    { title: 'Surname', field: 'surname', initialEditValue: 'initial edit value' },
-    { title: 'Birth Year', field: 'birthYear', type: 'numeric' },
-    {
-      title: 'Birth Place',
-      field: 'birthCity',
-      lookup: { 34: 'İstanbul', 63: 'Şanlıurfa' },
-    },
-  ]);
+export default function Stock() {
+  const [solds, setSolds] = useState<Sold[]>([]);
+  const [id, setid] = useState(0);
 
-  const [data, setData] = useState<Row[]>([
-    { name: 'Mehmet', surname: 'Baran', birthYear: 1987, birthCity: 63 },
-    { name: 'Zerya Betül', surname: 'Baran', birthYear: 2017, birthCity: 34 },
-  ]);
-
+  useEffect(() => {
+    (async () => {
+      api.get('sold').then(response => {
+        setSolds(response.data);
+      });
+    })();
+  },[]);
+  
   return (
     <div className="container">
       <MaterialTable
         title="Editable Preview"
+        icons={tableIcons}
         columns={columns}
-        data={data}
-        editable={{
-          onRowAdd: newData =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                setData([...data, newData]);
-                
-                resolve();
-              }, 1000)
-            }),
-          onRowUpdate: (newData, oldData) =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                if (oldData) {
-                  const dataUpdate = [...data];
-                  dataUpdate[data.indexOf(oldData)] = newData;
-                  setData([...dataUpdate]);
-                  resolve();
-                }
-              }, 1000)
-            }),
-          onRowDelete: oldData =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                const dataDelete = [...data];
-                dataDelete.splice(data.indexOf(oldData), 1);
-                setData([...dataDelete]);
-                
-                resolve();
-              }, 1000)
-            }),
-        }}
-      />
+        data={solds}
+        detailPanel={[{
+          tooltip: 'Mostrar Produtos',
+          render: rowData => {
+            setid(rowData.id);
+            return (
+              <div className="detailContent">
+                <ProductsTable id={id}/>
+              </div>
+            )
+          }
+        }]}/>
     </div>
   );
 }
