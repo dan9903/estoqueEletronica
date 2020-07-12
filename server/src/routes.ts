@@ -11,7 +11,7 @@ routes.get('/products', productController.index);
 routes.get('/products/:id', productController.show);
 routes.post('/add', productController.create);
 routes.put('/update', productController.update);
-routes.delete('/delete', productController.delete);
+routes.delete('/delete/:id', productController.delete);
 
 routes.get('/sold', soldController.index);
 routes.get('/sold/:id', soldController.show);

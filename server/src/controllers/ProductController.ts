@@ -45,7 +45,7 @@ class ProductController {
   }
 
   async delete(request: Request, response: Response) {
-    const { id } = request.body;
+    const { id } = request.params;
     try {
       await knex('products').delete().where('id', id);
       return response.status(200).json({"sucess": true});
