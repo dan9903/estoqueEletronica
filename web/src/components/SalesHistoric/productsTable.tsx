@@ -1,15 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import { tableIcons } from '../../utils/tableIcons';
-import MaterialTable, { Column } from 'material-table';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@material-ui/core';
 import api from '../../services/api';
 
-const productColumns: Array<Column<Product>> = [
-  { title: 'Nome', field: 'product_name' },
-  { title: 'Quantidade', field: 'quantity', type: 'numeric' },
-  { title: 'Preço', field: 'price', type: 'currency', currencySetting:{ locale: 'pt-BR', currencyCode: 'BRL', maximumFractionDigits: 2 } }
-]
 
 interface Product {
+  id: number;
   product_name: string;
   quantity: number;
   price: number;
@@ -31,16 +26,27 @@ const ProductTable: React.FC<Props> = ({id}) => {
   },[id]);
 
   return (
-    <div className="cotnainer">
-      <MaterialTable
-        title="Produtos vendidos"
-        columns={productColumns}
-        icons={tableIcons}
-        data={products}
-        options={{
-          paging:false
-        }}
-      />
+    <div className="container">
+     <TableContainer component={Paper}>
+            <Table size="small" aria-label="a dense table">
+              <TableHead>
+                <TableRow>
+                  <TableCell align="left" width="2%">Qtde</TableCell>
+                  <TableCell align="center" width="90%">Produto</TableCell>
+                  <TableCell align="left" width="8%">Valor Unitário</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                { products.map(product=>(
+                <TableRow key={product.id}>
+                  <TableCell align="center">{product.quantity}</TableCell>
+                  <TableCell align="center">{product.product_name}</TableCell>
+                  <TableCell align="right">{product.price}</TableCell>
+                </TableRow>
+                )) }
+              </TableBody>
+            </Table>
+          </TableContainer>
     </div>
   );
 }

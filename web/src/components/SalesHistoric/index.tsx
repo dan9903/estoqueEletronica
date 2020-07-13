@@ -21,7 +21,6 @@ const columns : Array<Column<Sold>> = [
 
 export default function Stock() {
   const [solds, setSolds] = useState<Sold[]>([]);
-  const [id, setid] = useState(0);
 
   useEffect(() => {
     (async () => {
@@ -38,17 +37,14 @@ export default function Stock() {
         icons={tableIcons}
         columns={columns}
         data={solds}
-        detailPanel={[{
-          tooltip: 'Mostrar Produtos',
-          render: rowData => {
-            setid(rowData.id);
+        detailPanel={rowData => {
             return (
               <div className="detailContent">
-                <ProductsTable id={id}/>
+                <ProductsTable id={rowData.id}/>
               </div>
             )
-          }
-        }]}/>
+        }}
+        />
     </div>
   );
 }
