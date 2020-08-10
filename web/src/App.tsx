@@ -5,6 +5,7 @@ import 'react-tabs/style/react-tabs.css';
 import Sold from './components/Sales';
 import Stock from './components/Stock';
 import SoldHistoric from './components/SalesHistoric';
+import Test from './components/Sales/testmask';
 
 
 function App() {
@@ -15,12 +16,12 @@ function App() {
       </header>
       <div className='container'>
         <Tabs>
-          <TabList>
+          <TabList> 
             <Tab>Vendas</Tab>
             <Tab>Estoque</Tab>
             <Tab>Histórico de Vendas</Tab>
+            <Tab>Teste</Tab>
           </TabList>
-
           <TabPanel>
             <Sold/>
           </TabPanel>
@@ -29,6 +30,9 @@ function App() {
           </TabPanel>
           <TabPanel>
             <SoldHistoric/>
+          </TabPanel>
+          <TabPanel>
+            <Test/>
           </TabPanel>
         </Tabs>
       </div>
