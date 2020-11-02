@@ -1,41 +1,24 @@
 import React from 'react';
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import 'react-tabs/style/react-tabs.css';
-
-import Sold from './components/Sales';
-import Stock from './components/Stock';
-import SoldHistoric from './components/SalesHistoric';
-import Test from './components/Sales/testmask';
-
+import logo from './logo.svg';
+import './App.css';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Eletronica Beira-Rio</h1>
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Edit <code>src/App.tsx</code> and save to reload.
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
       </header>
-      <div className='container'>
-        <Tabs>
-          <TabList> 
-            <Tab>Vendas</Tab>
-            <Tab>Estoque</Tab>
-            <Tab>Histórico de Vendas</Tab>
-            <Tab>Teste</Tab>
-          </TabList>
-          <TabPanel>
-            <Sold/>
-          </TabPanel>
-          <TabPanel>
-            <Stock/>
-          </TabPanel>
-          <TabPanel>
-            <SoldHistoric/>
-          </TabPanel>
-          <TabPanel>
-            <Test/>
-          </TabPanel>
-        </Tabs>
-      </div>
     </div>
   );
 }
