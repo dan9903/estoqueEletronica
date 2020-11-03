@@ -1,0 +1,75 @@
+.container {
+  width: 100%;
+  height: 100%;
+  display: block;
+  padding-top: 55px;
+}
+
+.clientInfo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin: 8vh 5vw;
+  padding: 4vh 13vw;
+  border: 1px solid gray;
+  border-radius: 6px;
+}
+
+.clientPhone {
+  margin-left: 10vw;
+  padding: 2vh 3vw;
+}
+
+.productsDiv {
+  margin: auto 5vw;
+  padding: auto 13vw;
+  border: 1px solid gray;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.productSearch {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.inputSearch {
+  width: 100vh;
+  padding: 5px;
+}
+
+table {
+  background: #282c34;
+}
+
+.table {
+  width: 95%;
+  display: flex;
+  flex-direction: row;
+  margin: auto;
+  justify-content: center;
+  align-items: center;
+}
+
+label {
+  padding: 7px;
+}
+
+.qtdeSelect {
+  width: 10vh;
+}
+
+.divTotal {
+  display: block;
+  float: right;
+  padding-top: 10px;
+}
+
+.totalInput {
+  max-width: 100px;
+}
