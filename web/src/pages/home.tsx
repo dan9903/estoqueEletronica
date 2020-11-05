@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <main>
       <h1> Eletronica Beira Rio </h1>
-      <h2>dixa de sumir ciado</h2>
+      <h2>Home screen bonitinha</h2>
     </main>
   );
 }

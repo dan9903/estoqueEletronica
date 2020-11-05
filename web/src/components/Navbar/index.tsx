@@ -1,16 +1,27 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import './style.css';
 
-export default function Sidebar() {
+const Sidebar = () => {
   return (
     <div className="navbar-main">
       <ul>
-        <li><a href="/" className="active">Home</a></li>
-        <li><a href="/vendas">Vendas</a></li>
-        <li><a href="/estoque">Estoque</a></li>
-        <li><a href="/historico-vendas">Historico de Vendas</a></li>
+        <li>
+          <Link to="/" className="active">Home</Link>  
+        </li>
+        <li>
+          <Link to="/vendas">Vendas</Link>
+          </li>
+        <li>
+          <Link to="/estoque">Estoque</Link>
+        </li>
+        <li>
+          <Link to="/historico-vendas">Historico de Vendas</Link>
+        </li>
       </ul>
     </div>
   );
 }
+
+export default Sidebar;

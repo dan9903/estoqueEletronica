@@ -1,16 +1,9 @@
-.container {
-  width: 100%;
-  height: 100%;
-  display: block;
-  padding-top: 55px;
-}
-
 .clientInfo {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  margin: 8vh 5vw;
+  margin: 4vh 5vw;
   padding: 4vh 13vw;
   border: 1px solid gray;
   border-radius: 6px;
@@ -28,6 +21,7 @@
   border-radius: 6px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
 }
 
@@ -39,11 +33,13 @@
 }
 
 .inputSearch {
-  width: 100vh;
-  padding: 5px;
+  width: 50vw;
+  padding: 2px;
 }
 
 table {
+  /* margin-top: 1vh; */
+  border: none;
   background: #282c34;
 }
 
@@ -68,6 +64,7 @@ label {
   display: block;
   float: right;
   padding-top: 10px;
+  margin: 2vh auto;
 }
 
 .totalInput {
