@@ -1,0 +1,9 @@
+#table {
+  margin: 0 5vw;
+  border: none;
+  border-collapse: collapse;
+}
+
+.customer-data {
+  font: 500 12pt Ubuntu Mono, sans-serif !important;
+}

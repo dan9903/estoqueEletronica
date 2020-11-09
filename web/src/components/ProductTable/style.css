@@ -1,0 +1,13 @@
+.detailContent {
+  display: flex;
+  justify-content: flex-end;
+  align-items: right;
+}
+
+.product-data {
+  font: 500 12pt Ubuntu, sans-serif !important;
+}
+
+.sub-title {
+  font: 500 12pt Ubuntu, sans-serif !important;
+}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 import './style.css';
 
@@ -8,16 +8,16 @@ const Sidebar = () => {
     <div className="navbar-main">
       <ul>
         <li>
-          <Link to="/" className="active">Home</Link>  
+          <NavLink exact to="/" activeClassName="active">Home</NavLink>
         </li>
         <li>
-          <Link to="/vendas">Vendas</Link>
-          </li>
-        <li>
-          <Link to="/estoque">Estoque</Link>
+          <NavLink to="/vendas" activeClassName="active">Vendas</NavLink>
         </li>
         <li>
-          <Link to="/historico-vendas">Historico de Vendas</Link>
+          <NavLink to="/estoque" activeClassName="active">Estoque</NavLink>
+        </li>
+        <li>
+          <NavLink to="/historico-vendas" activeClassName="active">Histórico de Vendas</NavLink>
         </li>
       </ul>
     </div>

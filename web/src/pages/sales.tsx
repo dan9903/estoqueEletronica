@@ -1,50 +1,116 @@
-import React from 'react';
+import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { Button, Input, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@material-ui/core';
 import { Delete } from '@material-ui/icons';
 import ReactSelect from 'react-select';
+import api from '../services/api';
 
 import '../styles/pages/sales.css';
 
+interface Product {
+  id: number;
+  name: string;
+  quantity: number;
+  price: number;
+}
+
+interface SelectedProduct {
+  id: number,
+  price: number,
+  quantity: number,
+}
+
+
 export default function Sales() {
-  const products = [
-    {name: 'Capacitor', id: 'Capacitor'},
-    {name: 'Transistor', id: 'Transistor'},
-    {name: 'Fonte', id: 'Fonte'},
-    {name: 'Controle de TV', id: 'Controle de TV'},
-  ];
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [discount, setDiscount] = useState(0);
+  const [subTotal, setSubTotal] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [productId, setProductId] = useState(0);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [selectedProducts, setSelectedProducts] =  useState<SelectedProduct[]>([]);
 
-  const selectedProducts = [
-    {id: 0, quantity: 0,name: 'Capacitor', price: 0},
-    {id: 0, quantity: 0,name: 'Transistor', price: 0},
-    {id: 0, quantity: 0,name: 'Fonte', price: 0}
-  ];
+  useEffect(() => {
+    api.get('products').then(response => {
+      setProducts(response.data);
+    });
+  }, []);
+  
+  useEffect(() => {
+    setTotal( subTotal-discount); 
+  }, [discount, subTotal])
 
-  function handleOptionChange(value: any) {
-    console.log(value.value);
+  function handleOptionChange (value: any) {
+    setProductId(value.value);
   }
 
   function handleAddProduct() {
-    alert('Product added')
-    // if(productId > 0 ){
-    //   const productIndex = selectedProducts.findIndex(product => product.id === productId);
-    //   if (productIndex === -1 ) {
-    //     var {id, price, quantity } = products.filter(product => product.id === productId)[0];
-    //     quantity = 0;
-    //     const product: SelectedProduct = {id, price,  quantity };
-    //     setSelectedProducts( [ ...selectedProducts, product ] );
-    //   }
-    //   setProductId(0);
-    // }
+    if(productId > 0 ) {
+      const productIndex = selectedProducts.findIndex(product => product.id === productId);
+      if (productIndex === -1 ) {
+        var {id, price, quantity } = products.filter(product => product.id === productId)[0];
+        quantity = 0;
+        const product: SelectedProduct = {id, price,  quantity };
+        setSelectedProducts( [ ...selectedProducts, product ] );
+      }
+      setProductId(0);
+    }
+  }
+
+  function handleQuantityChange(event: ChangeEvent<{name?: string, value: unknown}>) {
+    const { name, value } = event.target;
+    const index = selectedProducts.findIndex(product => product.id === Number(name));
+    const editProducts = [...selectedProducts];
+    const oldPrice = selectedProducts[index].quantity * selectedProducts[index].price; 
+    
+    editProducts[index].quantity = Number(value);
+    
+    setSubTotal( subTotal + Number(value) * selectedProducts[index].price - oldPrice);
+    setSelectedProducts(editProducts);
   }
 
   function handleDelProduct(id: number) {
-    alert('Delete product: '+ id);
+    const products = selectedProducts.filter(product => product.id !== id );
+    setSelectedProducts(products);
   }
 
+  function clearForm() {
+    setName('');
+    setPhone('');
+    setSubTotal(0);
+    setTotal(0);
+    setSelectedProducts([]);
+  }
+  
+  async function handleSubmit(event: FormEvent) {
+    event.preventDefault();
+    
+    const products = selectedProducts.map( product => {
+      return {
+        product_id: product.id,
+        quantity:  product.quantity
+      }
+    });
+
+    const data= {
+      name,
+      phone,
+      total,
+      products
+    }
+  
+    try  {
+      await api.post('sold', data); 
+      clearForm();
+    } catch(err) {
+      console.log(err);
+      alert('Erro ao salvar venda, tente novamente!');
+    }
+  }
 
   return (   
     <div className="container">
-      <form id="solds-form" >
+      <form id="solds-form" onSubmit={handleSubmit} >
         <div className="clientInfo">
           <TextField
             id="name"
@@ -54,6 +120,8 @@ export default function Sales() {
             variant="outlined"
             inputProps={{ size:50 }}
             className="clientName"
+            value={name}
+            onChange={e=>setName(e.target.value)}
           />
           <TextField
             id="phone"
@@ -62,6 +130,8 @@ export default function Sales() {
             variant="outlined"
             inputProps={{ maxLength: 11, size:10 }}
             className="clientPhone"
+            value={phone}
+            onChange={e=>setPhone(e.target.value)}
           />
         </div>
       
@@ -80,7 +150,7 @@ export default function Sales() {
                     })}
                 onChange={handleOptionChange}
                 />
-              <Button color="primary" onClick={handleAddProduct}>Adicionar</Button>
+              <Button color="primary" className="btnSales"  onClick={handleAddProduct}>Adicionar</Button>
           </div>
         
           <div className="table">
@@ -90,8 +160,8 @@ export default function Sales() {
                   <TableRow>
                   <TableCell align="left" width="1%"></TableCell>
                     <TableCell align="left" width="1%">Qtde</TableCell>
-                    <TableCell align="left" width="90%">Produto</TableCell>
-                    <TableCell align="left" width="8%">Valor Unitário</TableCell>
+                    <TableCell align="left" width="88%">Produto</TableCell>
+                    <TableCell align="left" width="10%">Valor Unitário</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -104,32 +174,41 @@ export default function Sales() {
                       ><Delete/></Button>
                     </TableCell>
                     <TableCell align="left">
-                      <Select 
+                    <Select 
                         labelId="quantity-select"
                         id="quantity"
-                        // onChange={handleQuantityChange}
+                        onChange={handleQuantityChange}
                         inputProps={{ name: product.id }}
                       >
-                        <MenuItem value="0">quantity</MenuItem>
+                        {[ ...Array( products.filter(productData => product.id === productData.id )[0].quantity )].map((x, i) => {
+                              return <MenuItem value={i+1}>{i+1}</MenuItem>
+                            }) }
                       </Select>
                     </TableCell>
-                    <TableCell align="center">{product.name}</TableCell>
+                    <TableCell align="center">{products.filter(productData => product.id === productData.id )[0].name}</TableCell>
                     <TableCell align="right">R$ {product.price}</TableCell>
                   </TableRow>
                 ))}
                 <TableRow>
                   <TableCell rowSpan={3} />
                   <TableCell colSpan={2}>Subtotal</TableCell>
-                  <TableCell align="right">10</TableCell>
+                  <TableCell align="right">R$ {subTotal}</TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell>Desconto</TableCell>
-                  <TableCell align="right"><Input type="number"  name="desconto" /></TableCell>
-                  <TableCell align="right">10</TableCell>
+                  <TableCell colSpan={2}>Desconto</TableCell>
+                  <TableCell align="right">
+                    <Input
+                      type="number"
+                      name="discount"
+                      id="discount"
+                      value={discount}
+                      onChange={e=>setDiscount(Number(e.target.value))}
+                    />
+                  </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell colSpan={2}>Total</TableCell>
-                  <TableCell align="right">10</TableCell>
+                  <TableCell id="total">R$ {total}</TableCell>
                 </TableRow>
                 </TableBody>
               </Table>
@@ -140,7 +219,7 @@ export default function Sales() {
             <Button
               variant="contained"
               type="submit"
-              className=" soldButton"
+              className= "btnSales"
             >Vender</Button>
           </div>
         </div>

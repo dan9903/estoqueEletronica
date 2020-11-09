@@ -1,1 +1,6 @@
-
+#table {
+  width: 90%;
+  margin: 4vh 5vw;
+  border: 1px solid gray;
+  border-radius: 6px;
+}

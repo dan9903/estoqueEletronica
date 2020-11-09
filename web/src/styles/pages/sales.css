@@ -38,9 +38,7 @@
 }
 
 table {
-  /* margin-top: 1vh; */
   border: none;
-  background: #282c34;
 }
 
 .table {
@@ -60,6 +58,10 @@ label {
   width: 10vh;
 }
 
+#discount {
+  text-align: right;
+}
+
 .divTotal {
   display: block;
   float: right;
@@ -67,6 +69,12 @@ label {
   margin: 2vh auto;
 }
 
-.totalInput {
-  max-width: 100px;
+#total {
+  margin: 0;
+  padding: 0;
+}
+
+.btnSales {
+  font: 700 20px Ubuntu, sans-serif !important;
+  color: #d50000 !important;
 }
