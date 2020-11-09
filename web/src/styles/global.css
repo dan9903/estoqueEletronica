@@ -1,11 +1,7 @@
 body {
   margin: 0;
   padding: 0;
-}
-
-/* Ubuntu and Ubuntu Mono */
-
-body {
+  overflow: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font: 700 20px Ubuntu, sans-serif;
