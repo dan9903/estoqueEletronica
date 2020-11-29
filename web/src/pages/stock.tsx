@@ -8,7 +8,7 @@ import '../styles/pages/stock.css';
 interface Product {
   id: number;
   name: string;
-  quantity: number;
+  amount: number;
   price: number;
 }
 
@@ -16,7 +16,7 @@ export default function Stock() {
   const [products, setProducts] = useState<Product[]>([]);
   const columns: Array<Column<Product>> =  [
       { title: 'Nome', field: 'name' },
-      { title: 'Quantidade', field: 'quantity', type: 'numeric' },
+      { title: 'Quantidade', field: 'amount', type: 'numeric' },
       { title: 'Preço', field: 'price', type: 'currency', currencySetting:{ locale: 'pt-BR', currencyCode: 'BRL', maximumFractionDigits: 2 } }
   ];
 
@@ -28,7 +28,7 @@ export default function Stock() {
 
   async function saveProduct(product: Product) {
     try {
-      await api.post('add', product);
+      await api.post('products', product);
       setProducts([...products, product]);
     } catch (err) {
       console.log(err);
@@ -38,7 +38,7 @@ export default function Stock() {
 
   async function updateProduct(newProduct: Product, oldProduct: Product) {
     try {
-      await api.put('update', newProduct);
+      await api.put('products', newProduct);
       const productUpdate = [...products];
       productUpdate[productUpdate.indexOf(oldProduct)] = newProduct;
       setProducts(productUpdate);
@@ -50,7 +50,7 @@ export default function Stock() {
   }
   async function deleteProduct(product: Product) {
     try {
-      await api.delete(`delete/${product.id}`);
+      await api.delete(`products/${product.id}`);
       const productDelete = [...products];
       productDelete.splice(productDelete.indexOf(product), 1);
       setProducts(productDelete);

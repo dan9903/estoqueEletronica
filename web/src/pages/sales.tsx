@@ -9,14 +9,14 @@ import '../styles/pages/sales.css';
 interface Product {
   id: number;
   name: string;
-  quantity: number;
+  amount: number;
   price: number;
 }
 
 interface SelectedProduct {
   id: number,
   price: number,
-  quantity: number,
+  amount: number,
 }
 
 
@@ -48,9 +48,9 @@ export default function Sales() {
     if(productId > 0 ) {
       const productIndex = selectedProducts.findIndex(product => product.id === productId);
       if (productIndex === -1 ) {
-        var {id, price, quantity } = products.filter(product => product.id === productId)[0];
-        quantity = 0;
-        const product: SelectedProduct = {id, price,  quantity };
+        var {id, price, amount } = products.filter(product => product.id === productId)[0];
+        amount = 0;
+        const product: SelectedProduct = {id, price,  amount };
         setSelectedProducts( [ ...selectedProducts, product ] );
       }
       setProductId(0);
@@ -61,9 +61,9 @@ export default function Sales() {
     const { name, value } = event.target;
     const index = selectedProducts.findIndex(product => product.id === Number(name));
     const editProducts = [...selectedProducts];
-    const oldPrice = selectedProducts[index].quantity * selectedProducts[index].price; 
+    const oldPrice = selectedProducts[index].amount * selectedProducts[index].price; 
     
-    editProducts[index].quantity = Number(value);
+    editProducts[index].amount = Number(value);
     
     setSubTotal( subTotal + Number(value) * selectedProducts[index].price - oldPrice);
     setSelectedProducts(editProducts);
@@ -85,10 +85,10 @@ export default function Sales() {
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     
-    const products = selectedProducts.map( product => {
+    const productsSold = selectedProducts.map( product => {
       return {
-        product_id: product.id,
-        quantity:  product.quantity
+        productId: product.id,
+        amount:  product.amount
       }
     });
 
@@ -96,11 +96,11 @@ export default function Sales() {
       name,
       phone,
       total,
-      products
+      productsSold
     }
   
     try  {
-      await api.post('sold', data); 
+      await api.post('customers', data); 
       clearForm();
     } catch(err) {
       console.log(err);
@@ -175,12 +175,12 @@ export default function Sales() {
                     </TableCell>
                     <TableCell align="left">
                     <Select 
-                        labelId="quantity-select"
-                        id="quantity"
+                        labelId="amount-select"
+                        id="amount"
                         onChange={handleQuantityChange}
                         inputProps={{ name: product.id }}
                       >
-                        {[ ...Array( products.filter(productData => product.id === productData.id )[0].quantity )].map((x, i) => {
+                        {[ ...Array( products.filter(productData => product.id === productData.id )[0].amount )].map((x, i) => {
                               return <MenuItem value={i+1}>{i+1}</MenuItem>
                             }) }
                       </Select>

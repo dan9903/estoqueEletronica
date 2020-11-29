@@ -11,8 +11,8 @@ interface Customer {
   id: number,
   name: string,
   phone: string,
-  sold_date: string,
-  sold_value: number,
+  createdAt: string,
+  total: number,
 }
 
 export default function SalesHistoric() {
@@ -20,13 +20,13 @@ export default function SalesHistoric() {
   const columns : Array<Column<Customer>> = [
     { title: 'Nome', field: 'name' },
     { title: 'Telefone', field: 'phone', type: 'string' },
-    { title: 'Data da Venda', field: 'sold_date', type: 'date' },
-    { title: 'Valor da Venda', field: 'sold_value', type: 'currency', currencySetting: {currencyCode: 'BRL' } },
+    { title: 'Data da Venda', field: 'createdAt', type: 'date' },
+    { title: 'Valor da Venda', field: 'total', type: 'currency', currencySetting: {currencyCode: 'BRL' } },
   ];
   
   useEffect( () => {
     (async () => {
-      api.get('solds').then( response => {
+      api.get('customers').then( response => {
         setCustomers(response.data);
       });
     })();

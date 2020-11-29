@@ -7,11 +7,10 @@ import api from '../../services/api';
 import './style.css';
 
 interface Product {
-  product_id: number;
-  product_name: string;
-  quantity: number;
+  id: number;
+  name: string;
+  amount: number;
   price: number;
-  customer_id: number;
 }
 
 interface Props {
@@ -22,7 +21,7 @@ const ProductTable: React.FC<Props> = ({customer_id}) =>  {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    api.get(`sold/${customer_id}`).then(response => {
+    api.get(`customers/products/${customer_id}`).then(response => {
       setProducts(response.data);
     })
   }, [customer_id]);
@@ -44,13 +43,13 @@ const ProductTable: React.FC<Props> = ({customer_id}) =>  {
 
               <TableBody>
                 {products.map((product) => (
-                  <TableRow key={product.product_id}>
+                  <TableRow key={product.id}>
                     <TableCell className="product-data" component="th" scope="row">
-                      {product.product_name}
+                      {product.name}
                     </TableCell >
-                    <TableCell className="product-data" align="right">{product.quantity}</TableCell>
+                    <TableCell className="product-data" align="right">{product.amount}</TableCell>
                     <TableCell className="product-data" align="right">{product.price}</TableCell>
-                    <TableCell className="product-data" align="right">{product.price * product.quantity }</TableCell>
+                    <TableCell className="product-data" align="right">{product.price * product.amount }</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

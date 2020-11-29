@@ -1,7 +1,9 @@
 package com.dan9903.eletronicstock.model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -12,29 +14,40 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.dan9903.eletronicstock.model.dto.CustomerDTO;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import lombok.Data;
 
 @Data
 @Entity
 @Table(name = "customers")
 public class Customer {
+
+  public static Customer from(CustomerDTO dto) {
+    Customer entity = new Customer();
+    entity.setId(dto.getId());
+    entity.setName(dto.getName());
+    entity.setPhone(dto.getPhone());
+    entity.setCreatedAt(dto.getCreatedAt());
+    entity.setTotal(dto.getTotal());
+    entity.setProductsSold(dto.getProductsSold().stream().map(ProductSold::from).collect(Collectors.toList()));
+    return entity;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
   private String name;
   private String phone;
+  private float total;
+
+  @CreationTimestamp
+  private LocalDateTime createdAt;
+
   @OneToMany(cascade = CascadeType.ALL)
-  @JoinColumn(name = "customer_id")
-  private List<Product> products = new ArrayList<Product>();
+  @JoinColumn(name = "customerId")
+  private List<ProductSold> productsSold = new ArrayList<>();
 
-  public Customer() {
-  }
-
-  public void addProduct(Product a_product) {
-    products.add(a_product);
-  }
-
-  public void removeProduct(Product a_product) {
-    products.remove(a_product);
-  }
 }
